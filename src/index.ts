@@ -1,18 +1,23 @@
 /**
- * Welcome to Cloudflare Workers! This is your first worker.
+ * Valentine's Games Worker
  *
- * - Run `npm run dev` in your terminal to start a development server
- * - Open a browser tab at http://localhost:8787/ to see your worker in action
- * - Run `npm run deploy` to publish your worker
- *
- * Bind resources to your worker in `wrangler.jsonc`. After adding bindings, a type definition for the
- * `Env` object can be regenerated with `npm run cf-typegen`.
- *
- * Learn more at https://developers.cloudflare.com/workers/
+ * Routes:
+ * - / -> valentines.html (index.html)
+ * - /games.html -> game picker
+ * - /chase.html -> Winter Heart Chase game
+ * - /snake.html -> Snake game
+ * - /catch-hearts.html -> Catch Hearts game
+ * - /assets/* -> static game assets
  */
 
 export default {
-	async fetch(request, env, ctx): Promise<Response> {
-		return new Response('Hello World!');
+	async fetch(request: Request, env: Env): Promise<Response> {
+		// All routes are handled by the ASSETS binding
+		// Routes:
+		// - / serves index.html (valentines page)
+		// - /games.html, /chase.html, /snake.html, /catch-hearts.html
+		// - /assets/* for game sprites and images
+		// - /app.js, /chase.js for game scripts
+		return env.ASSETS.fetch(request);
 	},
 } satisfies ExportedHandler<Env>;

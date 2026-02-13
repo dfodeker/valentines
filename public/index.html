@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Will You Be My Valentine? 💕</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --rose: #e8446d;
+    --rose-light: #fce4ec;
+    --rose-deep: #c2185b;
+    --blush: #fff0f3;
+    --cream: #fff8f0;
+    --gold: #d4a056;
+    --text: #3d1f2b;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100dvh;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ─── Floating hearts background ─── */
+  .hearts-bg {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 0;
+    overflow: hidden;
+  }
+  .floating-heart {
+    position: absolute;
+    font-size: 1.2rem;
+    opacity: 0;
+    animation: floatUp linear infinite;
+  }
+  @keyframes floatUp {
+    0%   { transform: translateY(100vh) rotate(0deg) scale(0.5); opacity: 0; }
+    10%  { opacity: 0.25; }
+    90%  { opacity: 0.2; }
+    100% { transform: translateY(-10vh) rotate(360deg) scale(1); opacity: 0; }
+  }
+
+  /* ─── Screens ─── */
+  .screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100dvh;
+    padding: 2rem 1.5rem;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+  .screen.active { display: flex; }
+
+  /* ─── Screen 1: Envelope ─── */
+  .envelope-wrap {
+    cursor: pointer;
+    animation: gentleBounce 2s ease-in-out infinite;
+    position: relative;
+  }
+  @keyframes gentleBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .envelope {
+    font-size: clamp(5rem, 15vw, 8rem);
+    filter: drop-shadow(0 8px 24px rgba(232,68,109,0.2));
+    transition: transform 0.3s;
+  }
+  .envelope-wrap:hover .envelope,
+  .envelope-wrap:active .envelope {
+    transform: scale(1.1) rotate(-5deg);
+  }
+  .tap-hint {
+    font-family: 'Caveat', cursive;
+    font-size: 1.3rem;
+    color: var(--rose);
+    margin-top: 1.5rem;
+    animation: fadeInUp 1s ease 0.5s both;
+  }
+  .screen1-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.3rem, 4vw, 1.8rem);
+    margin-bottom: 2rem;
+    animation: fadeInUp 0.8s ease both;
+    color: var(--rose-deep);
+  }
+
+  /* ─── Screen 2: Love letter unfolding ─── */
+  .letter-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    max-width: 380px;
+    width: 100%;
+    box-shadow: 0 12px 48px rgba(232,68,109,0.12), 0 2px 8px rgba(0,0,0,0.04);
+    animation: unfold 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    position: relative;
+    overflow: hidden;
+  }
+  .letter-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--rose), var(--gold), var(--rose));
+  }
+  @keyframes unfold {
+    0% { transform: scaleY(0) rotateX(40deg); opacity: 0; }
+    100% { transform: scaleY(1) rotateX(0); opacity: 1; }
+  }
+  .letter-greeting {
+    font-family: 'Caveat', cursive;
+    font-size: clamp(1.6rem, 5vw, 2.2rem);
+    color: var(--rose);
+    margin-bottom: 0.5rem;
+  }
+  .partner-name {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 7vw, 3rem);
+    color: var(--rose-deep);
+    margin-bottom: 1rem;
+    font-style: italic;
+  }
+  .letter-body {
+    font-family: 'Caveat', cursive;
+    font-size: 1.25rem;
+    line-height: 1.7;
+    color: #5a3344;
+    margin-bottom: 1.5rem;
+  }
+  .letter-body .line {
+    opacity: 0;
+    animation: fadeInUp 0.5s ease both;
+  }
+  .next-btn {
+    background: linear-gradient(135deg, var(--rose), var(--rose-deep));
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 0.9rem 2.5rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 16px rgba(232,68,109,0.3);
+    margin-top: 0.5rem;
+  }
+  .next-btn:hover, .next-btn:active {
+    transform: scale(1.05);
+    box-shadow: 0 6px 24px rgba(232,68,109,0.4);
+  }
+
+  /* ─── Screen 3: The Question ─── */
+  .question-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 6vw, 2.8rem);
+    font-weight: 700;
+    color: var(--rose-deep);
+    margin-bottom: 2.5rem;
+    line-height: 1.3;
+    animation: fadeInUp 0.6s ease both;
+  }
+  .question-text .name-highlight {
+    color: var(--rose);
+    font-style: italic;
+    display: block;
+    font-size: 110%;
+  }
+  .btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 280px;
+  }
+  .yes-btn {
+    background: linear-gradient(135deg, var(--rose), #f06292);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 1.1rem 2rem;
+    font-family: 'Caveat', cursive;
+    font-size: 1.6rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 6px 24px rgba(232,68,109,0.35);
+    animation: pulseGlow 1.5s ease-in-out infinite;
+  }
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 6px 24px rgba(232,68,109,0.35); }
+    50% { box-shadow: 0 8px 36px rgba(232,68,109,0.55); }
+  }
+  .yes-btn:hover, .yes-btn:active {
+    transform: scale(1.08);
+  }
+  .no-btn {
+    background: transparent;
+    color: var(--rose);
+    border: 2px solid var(--rose-light);
+    border-radius: 50px;
+    padding: 0.9rem 2rem;
+    font-family: 'Caveat', cursive;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  /* ─── Screen 4: Celebration ─── */
+  .celebration {
+    position: relative;
+  }
+  .big-heart {
+    font-size: clamp(4rem, 18vw, 7rem);
+    animation: heartBeat 0.8s ease both, heartPulse 1.5s ease-in-out 0.8s infinite;
+    filter: drop-shadow(0 8px 32px rgba(232,68,109,0.3));
+  }
+  @keyframes heartBeat {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.3); }
+    70% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+  }
+  @keyframes heartPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+  .celeb-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 5vw, 2.2rem);
+    font-weight: 700;
+    color: var(--rose-deep);
+    margin: 1.5rem 0 0.5rem;
+    animation: fadeInUp 0.6s ease 0.4s both;
+  }
+  .celeb-sub {
+    font-family: 'Caveat', cursive;
+    font-size: clamp(1.2rem, 4vw, 1.6rem);
+    color: var(--rose);
+    margin-bottom: 0.5rem;
+    animation: fadeInUp 0.6s ease 0.6s both;
+  }
+  .date-badge {
+    display: inline-block;
+    background: white;
+    border: 2px solid var(--rose-light);
+    border-radius: 16px;
+    padding: 0.6rem 1.5rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--rose-deep);
+    margin: 1rem 0 1.8rem;
+    animation: fadeInUp 0.6s ease 0.8s both;
+    box-shadow: 0 4px 12px rgba(232,68,109,0.08);
+  }
+  .screenshot-prompt {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(8px);
+    border-radius: 16px;
+    padding: 1.2rem 1.8rem;
+    animation: fadeInUp 0.6s ease 1.2s both;
+    border: 1px dashed var(--rose);
+    max-width: 320px;
+  }
+  .screenshot-prompt p {
+    font-family: 'Caveat', cursive;
+    font-size: 1.2rem;
+    color: var(--rose-deep);
+    line-height: 1.5;
+  }
+  .screenshot-prompt .camera-icon {
+    font-size: 1.5rem;
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+
+  /* ─── No-escape animation ─── */
+  .no-btn {
+    transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+    position: relative;
+    z-index: 5;
+  }
+
+  /* ─── Confetti canvas ─── */
+  #confetti {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* ─── Shared ─── */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .sparkle {
+    position: absolute;
+    width: 4px; height: 4px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: sparkleFade 0.6s ease both;
+  }
+  @keyframes sparkleFade {
+    0% { transform: scale(0); opacity: 1; }
+    100% { transform: scale(2); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Floating hearts background -->
+<div class="hearts-bg" id="heartsBg"></div>
+<canvas id="confetti"></canvas>
+
+<!-- Screen 1: Tap the envelope -->
+<div class="screen active" id="screen1">
+  <p class="screen1-title">You've received a special message...</p>
+  <div class="envelope-wrap" id="envelopeTap">
+    <div class="envelope">💌</div>
+  </div>
+  <p class="tap-hint">tap to open ✨</p>
+</div>
+
+<!-- Screen 2: Love letter -->
+<div class="screen" id="screen2">
+  <div class="letter-card">
+    <p class="letter-greeting">My dearest,</p>
+    <p class="partner-name" id="partnerName">Valentine</p>
+    <div class="letter-body">
+      <p class="line" style="animation-delay:0.3s">Every moment with you feels like magic ✨</p>
+      <p class="line" style="animation-delay:0.6s">You make my heart do that thing</p>
+      <p class="line" style="animation-delay:0.9s">where it skips a beat, then races,</p>
+      <p class="line" style="animation-delay:1.2s">then feels so full it might burst 💗</p>
+      <p class="line" style="animation-delay:1.5s">So I have a tiny question for you...</p>
+    </div>
+    <button class="next-btn" id="continueBtn">Continue →</button>
+  </div>
+</div>
+
+<!-- Screen 3: The big question -->
+<div class="screen" id="screen3">
+  <p class="question-text">
+    <span class="name-highlight" id="nameInQ">Valentine</span>
+    Will you be my Valentine? 💕
+  </p>
+  <div class="btn-group">
+    <button class="yes-btn" id="yesBtn">Yes!! 💖</button>
+    <button class="no-btn" id="noBtn">Hmm, maybe not...</button>
+  </div>
+</div>
+
+<!-- Screen 4: Celebration -->
+<div class="screen celebration" id="screen4">
+  <div class="big-heart">💖</div>
+  <p class="celeb-text">It's a date!</p>
+  <p class="celeb-sub" id="celebName">You & Valentine</p>
+  <div class="date-badge">Valentine's Day 2026 💌</div>
+  <div class="screenshot-prompt">
+    <span class="camera-icon">📸</span>
+    <p>Take a screenshot & send it to your love to make it official!</p>
+  </div>
+  <button class="next-btn" id="gameBtn" style="margin-top:1.2rem; animation: fadeInUp 0.6s ease 1.5s both;">
+    Play a Love Game? 🎮
+  </button>
+</div>
+
+<script>
+  // ─── Get name from URL ───
+  const params = new URLSearchParams(window.location.search);
+  const name = params.get('name') || 'Valentine';
+	const from = params.get('from') || 'Your Secret Admirer';
+  const displayName = decodeURIComponent(name);
+	const displayFrom = decodeURIComponent(from);
+
+
+  document.getElementById('partnerName').textContent = displayName;
+  document.getElementById('nameInQ').textContent = displayName + ',';
+  document.getElementById('celebName').textContent = displayFrom + ' & ' + displayName;
+  document.title = displayName + ', you have a Valentine\'s message! 💕';
+
+  // ─── Floating hearts ───
+  const heartsBg = document.getElementById('heartsBg');
+  const heartEmojis = ['💕', '💗', '💖', '🩷', '♥️', '✨', '🌸'];
+  for (let i = 0; i < 20; i++) {
+    const h = document.createElement('span');
+    h.className = 'floating-heart';
+    h.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+    h.style.left = Math.random() * 100 + '%';
+    h.style.animationDuration = (8 + Math.random() * 12) + 's';
+    h.style.animationDelay = (Math.random() * 10) + 's';
+    h.style.fontSize = (0.8 + Math.random() * 1) + 'rem';
+    heartsBg.appendChild(h);
+  }
+
+  // ─── Screen transitions ───
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  document.getElementById('envelopeTap').addEventListener('click', () => showScreen('screen2'));
+  document.getElementById('continueBtn').addEventListener('click', () => showScreen('screen3'));
+
+  // ─── Yes button ───
+  document.getElementById('yesBtn').addEventListener('click', () => {
+    showScreen('screen4');
+    launchConfetti();
+  });
+
+  // ─── No button: proximity-based repulsion ───
+  const noBtn = document.getElementById('noBtn');
+  const noPhrases = [
+    "Nuh uh! 😜",
+    "Can't touch this! 💃",
+    "Too slow~ 🏃‍♀️",
+    "Not happening! 🙅",
+    "Just say yes!! 💖",
+    "Give up yet? 🥰",
+    "You know what to do~ 💕",
+    "👆 The YES button is right there!"
+  ];
+  let dodgeCount = 0;
+  let noBtnOffsetX = 0;
+  let noBtnOffsetY = 0;
+  const REPEL_RADIUS = 120; // pixels — how close before it runs
+  const REPEL_STRENGTH = 160; // how far it jumps
+
+  function repelNoBtn(pointerX, pointerY) {
+    const screen3 = document.getElementById('screen3');
+    if (!screen3.classList.contains('active')) return;
+
+    const rect = noBtn.getBoundingClientRect();
+    const btnCX = rect.left + rect.width / 2;
+    const btnCY = rect.top + rect.height / 2;
+
+    const dx = btnCX - pointerX;
+    const dy = btnCY - pointerY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+
+    if (dist < REPEL_RADIUS && dist > 0) {
+      // Normalize and push away
+      const force = (1 - dist / REPEL_RADIUS) * REPEL_STRENGTH;
+      let pushX = (dx / dist) * force;
+      let pushY = (dy / dist) * force;
+
+      // Add a bit of randomness so it's playful
+      pushX += (Math.random() - 0.5) * 40;
+      pushY += (Math.random() - 0.5) * 40;
+
+      noBtnOffsetX += pushX;
+      noBtnOffsetY += pushY;
+
+      // Keep it on screen with padding
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const pad = 20;
+      const baseRect = noBtn.getBoundingClientRect();
+      // Clamp so button doesn't escape viewport
+      const futureLeft = baseRect.left + pushX;
+      const futureTop = baseRect.top + pushY;
+      if (futureLeft < pad || futureLeft + rect.width > vw - pad) {
+        noBtnOffsetX -= pushX * 1.5; // bounce back
+        noBtnOffsetX += (Math.random() - 0.5) * 60;
+      }
+      if (futureTop < pad || futureTop + rect.height > vh - pad) {
+        noBtnOffsetY -= pushY * 1.5;
+        noBtnOffsetY += (Math.random() - 0.5) * 60;
+      }
+
+      // Clamp total offset to keep visible
+      noBtnOffsetX = Math.max(-vw * 0.35, Math.min(vw * 0.35, noBtnOffsetX));
+      noBtnOffsetY = Math.max(-vh * 0.25, Math.min(vh * 0.25, noBtnOffsetY));
+
+      noBtn.style.transform = `translate(${noBtnOffsetX}px, ${noBtnOffsetY}px)`;
+
+      // Update text every few dodges
+      dodgeCount++;
+      if (dodgeCount % 3 === 0) {
+        const idx = Math.min(Math.floor(dodgeCount / 3) - 1, noPhrases.length - 1);
+        noBtn.textContent = noPhrases[idx];
+      }
+
+      // Shrink after many dodges
+      if (dodgeCount > 15) {
+        const scale = Math.max(0.5, 1 - (dodgeCount - 15) * 0.03);
+        noBtn.style.transform = `translate(${noBtnOffsetX}px, ${noBtnOffsetY}px) scale(${scale})`;
+        noBtn.style.opacity = Math.max(0.25, 1 - (dodgeCount - 15) * 0.04);
+      }
+      if (dodgeCount > 30) {
+        noBtn.style.display = 'none';
+      }
+    }
+  }
+
+  // Mouse move (desktop)
+  document.addEventListener('mousemove', (e) => {
+    repelNoBtn(e.clientX, e.clientY);
+  });
+
+  // Touch move (mobile) — also track finger position
+  document.addEventListener('touchmove', (e) => {
+    const touch = e.touches[0];
+    repelNoBtn(touch.clientX, touch.clientY);
+  }, { passive: true });
+
+  // Touch start (mobile) — instant repel on tap near
+  document.addEventListener('touchstart', (e) => {
+    const touch = e.touches[0];
+    repelNoBtn(touch.clientX, touch.clientY);
+  }, { passive: true });
+
+  // If they somehow click it, still dodge
+  noBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    noBtnOffsetX += (Math.random() - 0.5) * 200;
+    noBtnOffsetY += (Math.random() - 0.5) * 100;
+    noBtn.style.transform = `translate(${noBtnOffsetX}px, ${noBtnOffsetY}px)`;
+    dodgeCount += 3;
+    const idx = Math.min(Math.floor(dodgeCount / 3) - 1, noPhrases.length - 1);
+    noBtn.textContent = noPhrases[Math.max(0, idx)];
+  });
+
+  // ─── Confetti ───
+  function launchConfetti() {
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const pieces = [];
+    const colors = ['#e8446d', '#f06292', '#d4a056', '#ff8a80', '#f8bbd0', '#ffcc80', '#ce93d8'];
+
+    for (let i = 0; i < 120; i++) {
+      pieces.push({
+        x: canvas.width / 2 + (Math.random() - 0.5) * 200,
+        y: canvas.height + 10,
+        vx: (Math.random() - 0.5) * 12,
+        vy: -(8 + Math.random() * 10),
+        size: 4 + Math.random() * 6,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        rotation: Math.random() * 360,
+        rotSpeed: (Math.random() - 0.5) * 10,
+        gravity: 0.12 + Math.random() * 0.08,
+        opacity: 1,
+        shape: Math.random() > 0.5 ? 'rect' : 'circle'
+      });
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let alive = false;
+
+      pieces.forEach(p => {
+        p.x += p.vx;
+        p.vy += p.gravity;
+        p.y += p.vy;
+        p.rotation += p.rotSpeed;
+        p.vx *= 0.99;
+
+        if (p.y > canvas.height + 50) {
+          p.opacity -= 0.02;
+        }
+        if (p.opacity <= 0) return;
+        alive = true;
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+        ctx.globalAlpha = p.opacity;
+        ctx.fillStyle = p.color;
+
+        if (p.shape === 'rect') {
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+        } else {
+          ctx.beginPath();
+          ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      });
+
+      if (alive) requestAnimationFrame(animate);
+    }
+    animate();
+
+    // Second burst after a beat
+    setTimeout(() => {
+      for (let i = 0; i < 60; i++) {
+        pieces.push({
+          x: Math.random() * canvas.width,
+          y: -10,
+          vx: (Math.random() - 0.5) * 4,
+          vy: 2 + Math.random() * 4,
+          size: 3 + Math.random() * 5,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          rotSpeed: (Math.random() - 0.5) * 8,
+          gravity: 0.08,
+          opacity: 1,
+          shape: Math.random() > 0.5 ? 'rect' : 'circle'
+        });
+      }
+      animate();
+    }, 600);
+  }
+
+  // Resize canvas on orientation change
+  window.addEventListener('resize', () => {
+    const canvas = document.getElementById('confetti');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  // Game button — go to game picker
+  document.getElementById('gameBtn').addEventListener('click', () => {
+    window.location.href = 'games.html?name=' + encodeURIComponent(displayName);
+  });
+</script>
+</body>
+</html>

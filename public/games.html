@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Love Games 💕</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --rose: #e8446d;
+    --rose-light: #fce4ec;
+    --rose-deep: #c2185b;
+    --cream: #fff8f0;
+    --gold: #d4a056;
+    --text: #3d1f2b;
+  }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100dvh;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ─── Floating hearts ─── */
+  .hearts-bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .floating-heart { position: absolute; opacity: 0; animation: floatUp linear infinite; }
+  @keyframes floatUp {
+    0%   { transform: translateY(100vh) rotate(0deg) scale(0.5); opacity: 0; }
+    10%  { opacity: 0.2; }
+    90%  { opacity: 0.15; }
+    100% { transform: translateY(-10vh) rotate(360deg) scale(1); opacity: 0; }
+  }
+
+  /* ─── Page layout ─── */
+  .page {
+    position: relative;
+    z-index: 1;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2.5rem 1.5rem 3rem;
+  }
+
+  .header-emoji {
+    font-size: clamp(2.5rem, 10vw, 4rem);
+    margin-bottom: 0.5rem;
+    animation: gentleBounce 2.5s ease-in-out infinite;
+  }
+  @keyframes gentleBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 6vw, 2.5rem);
+    font-weight: 700;
+    color: var(--rose-deep);
+    margin-bottom: 0.3rem;
+    animation: fadeInUp 0.5s ease both;
+  }
+  .page-sub {
+    font-family: 'Caveat', cursive;
+    font-size: clamp(1.1rem, 3.5vw, 1.4rem);
+    color: var(--rose);
+    margin-bottom: 2rem;
+    animation: fadeInUp 0.5s ease 0.15s both;
+  }
+
+  /* ─── Game cards grid ─── */
+  .games-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .game-card {
+    background: white;
+    border-radius: 20px;
+    padding: 1.6rem 1rem 1.3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    border: 2px solid transparent;
+    box-shadow: 0 6px 24px rgba(232,68,109,0.08), 0 2px 6px rgba(0,0,0,0.03);
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.5s ease both;
+    text-decoration: none;
+    color: var(--text);
+  }
+  .game-card:nth-child(1) { animation-delay: 0.2s; }
+  .game-card:nth-child(2) { animation-delay: 0.35s; }
+  .game-card:nth-child(3) { animation-delay: 0.5s; }
+  .game-card:nth-child(4) { animation-delay: 0.65s; }
+
+  .game-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--rose), var(--gold));
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+  .game-card:hover, .game-card:active {
+    transform: translateY(-4px) scale(1.03);
+    border-color: var(--rose-light);
+    box-shadow: 0 12px 32px rgba(232,68,109,0.15), 0 4px 12px rgba(0,0,0,0.04);
+  }
+  .game-card:hover::before, .game-card:active::before { opacity: 1; }
+
+  .card-emoji {
+    font-size: 2.6rem;
+    margin-bottom: 0.6rem;
+    transition: transform 0.3s;
+  }
+  .game-card:hover .card-emoji,
+  .game-card:active .card-emoji {
+    transform: scale(1.15) rotate(-5deg);
+  }
+
+  .card-title {
+    font-family: 'Caveat', cursive;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--rose-deep);
+    margin-bottom: 0.25rem;
+    line-height: 1.2;
+  }
+  .card-desc {
+    font-size: 0.78rem;
+    color: #8a5068;
+    line-height: 1.4;
+  }
+
+  .card-badge {
+    position: absolute;
+    top: 8px; right: 8px;
+    background: var(--rose);
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* ─── Coming soon card ─── */
+  .game-card.coming-soon {
+    opacity: 0.5;
+    cursor: default;
+    pointer-events: none;
+  }
+  .game-card.coming-soon .card-emoji { filter: grayscale(0.6); }
+
+  /* ─── Back link ─── */
+  .back-link {
+    margin-top: 2rem;
+    font-family: 'Caveat', cursive;
+    font-size: 1.15rem;
+    color: var(--rose);
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    animation: fadeInUp 0.5s ease 0.8s both;
+  }
+  .back-link:hover { opacity: 1; }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="hearts-bg" id="heartsBg"></div>
+
+<div class="page">
+  <div class="header-emoji">🎮</div>
+  <h1 class="page-title">Love Games</h1>
+  <p class="page-sub" id="subtitle">Pick a game to play while you wait 💕</p>
+
+  <div class="games-grid" id="gamesGrid">
+
+    <a class="game-card" id="game1" href="#">
+      <span class="card-badge">Play</span>
+      <div class="card-emoji">💕</div>
+      <div class="card-title">Catch the Love</div>
+      <div class="card-desc">Tap falling hearts before they disappear!</div>
+    </a>
+
+    <a class="game-card" id="game2" href="#">
+      <span class="card-badge">Play</span>
+      <div class="card-emoji">🎯</div>
+      <div class="card-title">Chase</div>
+      <div class="card-desc">Catch All the Hearts before they freeze!</div>
+    </a>
+
+    <!-- Placeholder slots for future games -->
+    <div class="game-card " id="game3">
+      <span class="card-badge" style="background: #aaa;">Soon</span>
+      <div class="card-emoji">🎲</div>
+      <div class="card-title">Snake</div>
+      <div class="card-desc">Eat the Apples and grow longer!</div>
+    </div>
+
+    <div class="game-card coming-soon">
+      <span class="card-badge" style="background: #aaa;">Soon</span>
+      <div class="card-emoji">🎁</div>
+      <div class="card-title">Coming Soon</div>
+      <div class="card-desc">Stay tuned!</div>
+    </div>
+
+  </div>
+
+  <a class="back-link" id="backLink" href="#">← Back to Valentine's card</a>
+</div>
+
+<script>
+  // ─── Pass name through ───
+  const params = new URLSearchParams(window.location.search);
+  const name = params.get('name') || 'Valentine';
+  const nameParam = '?name=' + encodeURIComponent(name);
+
+  document.getElementById('subtitle').textContent = `Pick a game, ${decodeURIComponent(name)}! 💕`;
+
+  // Wire up game links
+  document.getElementById('game1').href = 'catch-hearts.html' + nameParam;
+  document.getElementById('game2').href = 'chase.html' + nameParam;
+	  document.getElementById('game3').href = 'snake.html' + nameParam;
+  document.getElementById('backLink').href = '/' + nameParam;
+
+  // ─── Floating hearts ───
+  const heartsBg = document.getElementById('heartsBg');
+  const emojis = ['💕', '💗', '💖', '🩷', '♥️', '✨', '🌸'];
+  for (let i = 0; i < 15; i++) {
+    const h = document.createElement('span');
+    h.className = 'floating-heart';
+    h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    h.style.left = Math.random() * 100 + '%';
+    h.style.fontSize = (0.8 + Math.random() * 0.8) + 'rem';
+    h.style.animationDuration = (10 + Math.random() * 12) + 's';
+    h.style.animationDelay = (Math.random() * 8) + 's';
+    heartsBg.appendChild(h);
+  }
+</script>
+</body>
+</html>
